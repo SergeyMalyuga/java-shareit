@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto UpdateUser(int userId, Map<Object, Object> fields) {
-        return userDao.UpdateUser(userId, fields);
+    public UserDto updateUser(int userId, Map<Object, Object> fields) {
+        return userDao.updateUser(userId, fields);
     }
 }

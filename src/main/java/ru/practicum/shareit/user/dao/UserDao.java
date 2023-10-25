@@ -19,5 +19,5 @@ public interface UserDao {
 
     String removeUserById(int userId);
 
-    UserDto UpdateUser(int userId, Map<Object, Object> fields);
+    UserDto updateUser(int userId, Map<Object, Object> fields);
 }

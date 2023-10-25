@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto UpdateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
-        return userService.UpdateUser(id, fields);
+    public UserDto updateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
+        return userService.updateUser(id, fields);
     }
 }

@@ -72,7 +72,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public UserDto UpdateUser(int userId, Map<Object, Object> fields) {
+    public UserDto updateUser(int userId, Map<Object, Object> fields) {
         if (userMap.containsKey(userId)) {
             User user = getUserById(userId);
             fields.forEach((key, value) -> {
