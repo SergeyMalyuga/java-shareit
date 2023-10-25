@@ -1,4 +1,4 @@
-package shareit.user.dao;
+package ru.practicum.shareit.user.dao;
 
 
 import ru.practicum.shareit.user.User;
