@@ -13,7 +13,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
 
     @Override
 
@@ -32,12 +32,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String removeUserById(int userId) {
+    public UserDto removeUserById(int userId) {
         return userDao.removeUserById(userId);
     }
 
     @Override
-    public UserDto UpdateUser(int userId, Map<Object, Object> fields) {
-        return userDao.UpdateUser(userId, fields);
+    public UserDto updateUser(int userId, Map<Object, Object> fields) {
+        return userDao.updateUser(userId, fields);
     }
 }

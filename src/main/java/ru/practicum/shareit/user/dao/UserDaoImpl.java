@@ -61,18 +61,16 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String removeUserById(int userId) {
+    public UserDto removeUserById(int userId) {
         if (userMap.containsKey(userId)) {
-            userMap.remove(userId);
-            userMap.remove(userId);
-            return "Пользователь с id:" + userId + " удалён.";
+            return userMapper.toUserDto(userMap.remove(userId));
         } else {
             throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
         }
     }
 
     @Override
-    public UserDto UpdateUser(int userId, Map<Object, Object> fields) {
+    public UserDto updateUser(int userId, Map<Object, Object> fields) {
         if (userMap.containsKey(userId)) {
             User user = getUserById(userId);
             fields.forEach((key, value) -> {
