@@ -14,7 +14,7 @@ import java.util.Map;
 @RequestMapping("/items")
 public class ItemController {
     @Autowired
-    ItemService itemService;
+    private ItemService itemService;
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,

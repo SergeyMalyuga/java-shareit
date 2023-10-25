@@ -14,7 +14,7 @@ public interface UserService {
 
     public UserDto getUserDtoById(int userId);
 
-    public String removeUserById(int userId);
+    public UserDto removeUserById(int userId);
 
-    public UserDto UpdateUser(int userId, Map<Object, Object> fields);
+    public UserDto updateUser(int userId, Map<Object, Object> fields);
 }

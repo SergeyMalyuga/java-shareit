@@ -88,12 +88,10 @@ public class ItemDaoImpl implements ItemDao {
         }
         List<ItemDto> listItem = new ArrayList<>();
         Pattern pattern = Pattern.compile(request.toLowerCase());
-        for (Item item : itemMap.values().stream().filter(item -> item.getAvailable() == true)
+        for (Item item : itemMap.values().stream().filter(item -> item.getAvailable() == true
+                        && pattern.matcher((item.getName() + " " + item.getDescription()).toLowerCase()).find())
                 .collect(Collectors.toList())) {
-            Matcher matcher = pattern.matcher((item.getName() + " " + item.getDescription()).toLowerCase());
-            if (matcher.find()) {
-                listItem.add(itemMapper.itemDto(item));
-            }
+            listItem.add(itemMapper.itemDto(item));
         }
         return listItem;
     }

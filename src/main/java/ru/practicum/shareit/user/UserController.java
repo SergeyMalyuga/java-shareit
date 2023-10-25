@@ -15,7 +15,7 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @PostMapping
     public UserDto addUser(@Valid @RequestBody User user) {
@@ -33,12 +33,12 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String removeUserById(@PathVariable(name = "id") int userId) {
+    public UserDto removeUserById(@PathVariable(name = "id") int userId) {
         return userService.removeUserById(userId);
     }
 
     @PatchMapping("/{id}")
-    public UserDto UpdateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
-        return userService.UpdateUser(id, fields);
+    public UserDto updateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
+        return userService.updateUser(id, fields);
     }
 }
