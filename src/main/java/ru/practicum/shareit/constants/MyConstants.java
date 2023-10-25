@@ -1,4 +1,4 @@
-package shareit.constants;
+package ru.practicum.shareit.constants;
 
 public class MyConstants {
     public static final String ADD_USER_POINTCUT = "execution(public ru.practicum.shareit.user.dto.UserDto ru.practicum.shareit.user.dao.UserDaoImpl.addUser" +
