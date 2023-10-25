@@ -1,4 +1,4 @@
-package shareit.user.service;
+package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
