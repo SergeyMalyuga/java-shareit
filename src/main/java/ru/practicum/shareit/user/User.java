@@ -1,4 +1,4 @@
-package shareit.user;
+package ru.practicum.shareit.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
