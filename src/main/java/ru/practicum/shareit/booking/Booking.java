@@ -1,4 +1,4 @@
-package shareit.booking;
+package ru.practicum.shareit.booking;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
