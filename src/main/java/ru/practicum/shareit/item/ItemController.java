@@ -17,14 +17,14 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                           @Valid @RequestBody Item item) {
+    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                        @Valid @RequestBody Item item) {
         return itemService.addItem(userId, item);
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable(name = "id") int itemId) {
-        return itemService.getItemDtoById(itemId);
+    public ItemDto getItemById(@PathVariable(name = "id") int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemService.getItemByIdDto(itemId, userId);
     }
 
     @GetMapping
@@ -33,14 +33,20 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                              @PathVariable(name = "id") int itemId,
-                              @RequestBody Map<Object, Object> fields) {
+    public Item updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                           @PathVariable(name = "id") int itemId,
+                           @RequestBody Map<Object, Object> fields) {
         return itemService.updateItem(userId, itemId, fields);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam(name = "text") String request) {
+    public List<Item> searchItem(@RequestParam(name = "text") String request) {
         return itemService.searchItem(request);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public Comment addComment(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id")
+    int userId, @RequestBody Comment comment) {
+        return itemService.addComment(itemId, userId, comment);
     }
 }
