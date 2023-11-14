@@ -9,6 +9,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.constants.MyConstants;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -17,10 +18,9 @@ import java.util.List;
 @Aspect
 @Slf4j
 public class LoggingAspect {
-
-    @AfterReturning(pointcut = MyConstants.ADD_USER_POINTCUT, returning = "userDto")
-    public void afterReturningAddUserAdvices(UserDto userDto) {
-        log.info("Пользователь " + userDto + "добавлен.");
+    @AfterReturning(pointcut = MyConstants.ADD_USER_POINTCUT, returning = "user")
+    public void afterReturningAddUserAdvices(User user) {
+        log.info("Пользователь " + user + "добавлен.");
     }
 
     @AfterThrowing(pointcut = MyConstants.ADD_USER_POINTCUT, throwing = "exception")
@@ -29,9 +29,9 @@ public class LoggingAspect {
         log.info("В методе " + methodSignature.getMethod() + " выброшено исключение: " + exception.getMessage());
     }
 
-    @AfterReturning(pointcut = MyConstants.REMOVE_USER_POINTCUT, returning = "response")
-    public void afterReturningRemoveUserByIdAdvices(String response) {
-        log.info(response);
+    @AfterReturning(pointcut = MyConstants.REMOVE_USER_POINTCUT)
+    public void afterReturningRemoveUserByIdAdvices() {
+        log.info("Пользователь удалён.");
     }
 
     @AfterThrowing(pointcut = MyConstants.REMOVE_USER_POINTCUT, throwing = "exception")
@@ -42,7 +42,7 @@ public class LoggingAspect {
 
     @AfterReturning(pointcut = MyConstants.GET_ALL_USERS_POINTCUT)
     public void afterReturningGetAllUserAdvice() {
-        log.info("Список всех пользователей получен.");
+        log.info("Получен список всех пользователей.");
     }
 
     @AfterReturning(pointcut = MyConstants.UPDATE_USER_POINTCUT, returning = "userDto")
