@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -17,8 +18,8 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping
-    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                        @Valid @RequestBody Item item) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                           @Valid @RequestBody Item item) {
         return itemService.addItem(userId, item);
     }
 
@@ -33,19 +34,19 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public Item updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                           @PathVariable(name = "id") int itemId,
-                           @RequestBody Map<Object, Object> fields) {
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                              @PathVariable(name = "id") int itemId,
+                              @RequestBody Map<Object, Object> fields) {
         return itemService.updateItem(userId, itemId, fields);
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam(name = "text") String request) {
+    public List<ItemDto> searchItem(@RequestParam(name = "text") String request) {
         return itemService.searchItem(request);
     }
 
     @PostMapping("/{itemId}/comment")
-    public Comment addComment(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id")
+    public CommentDto addComment(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id")
     int userId, @RequestBody Comment comment) {
         return itemService.addComment(itemId, userId, comment);
     }

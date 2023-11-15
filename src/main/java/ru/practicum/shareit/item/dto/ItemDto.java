@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.item.Comment;
+import ru.practicum.shareit.booking.dto.BookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -28,7 +27,7 @@ public class ItemDto {
     private Boolean available;
     private int ownerId;
     private String request;
-    private Booking lastBooking;
-    private Booking nextBooking;
-    private List<Comment> comments = new ArrayList<>();
+    private BookingDto lastBooking;
+    private BookingDto nextBooking;
+    private List<CommentDto> comments = new ArrayList<>();
 }
