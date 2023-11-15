@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
@@ -18,13 +19,13 @@ public class UserController {
 
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
+    public UserDto addUser(@Valid @RequestBody User user) {
         return userService.addUser(user);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsersDto();
     }
 
     @GetMapping("/{id}")
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
+    public UserDto updateUser(@PathVariable int id, @RequestBody Map<Object, Object> fields) {
         return userService.updateUser(id, fields);
     }
 }
