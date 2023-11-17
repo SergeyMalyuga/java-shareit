@@ -8,13 +8,17 @@ import java.util.Map;
 
 public interface UserService {
 
-    public UserDto addUser(User user);
+    UserDto addUser(User user);
 
-    public List<UserDto> getAllUsers();
+    List<UserDto> getAllUsersDto();
 
-    public UserDto getUserDtoById(int userId);
+    List<User> getAllUsers();
 
-    public UserDto removeUserById(int userId);
+    UserDto getUserDtoById(int userId);
 
-    public UserDto updateUser(int userId, Map<Object, Object> fields);
+    User getUserById(int userId);
+
+    void removeUserById(int userId);
+
+    UserDto updateUser(int userId, Map<Object, Object> fields);
 }
