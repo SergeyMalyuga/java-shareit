@@ -37,4 +37,5 @@ public class ErrorHandler {
     public ErrorResponse postWithoutBooking(PostWithoutBookingException e) {
         return new ErrorResponse(e.getMessage(), "Пользователь не может оставить комментарий к данной вещи.");
     }
+
 }

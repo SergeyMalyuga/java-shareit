@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.item.Comment;
 
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @ToString
+@Accessors(chain = true)
 @Table(name = "items")
 public class Item {
 
@@ -38,12 +40,12 @@ public class Item {
     private Boolean available;
     @Column(name = "owner_id")
     private int ownerId;
-    @Column(name = "request")
-    private String request;
     @OneToMany(mappedBy = "item")
     List<Booking> bookingList = new ArrayList<>();
     @OneToMany(mappedBy = "item")
     private List<Comment> comments = new ArrayList<>();
+    @Column(name = "request_id")
+    private Integer requestId;
     @Transient
     private Booking lastBooking;
     @Transient
@@ -58,7 +60,6 @@ public class Item {
         return this.id == item.id && Objects.equals(this.name, item.name)
                 && Objects.equals(this.description, item.description)
                 && Objects.equals(this.available, item.available)
-                && this.ownerId == item.ownerId && Objects.equals(this.request, item.request)
                 && Objects.equals(this.bookingList, item.bookingList)
                 && Objects.equals(this.comments, item.comments)
                 && Objects.equals(this.lastBooking, item.lastBooking)

@@ -1,0 +1,24 @@
+{
+  "id": 2,
+  "start": "2023-11-29T13:52:38",
+  "end": "2023-11-30T13:52:38",
+  "itemId": 0,
+  "status": "APPROVED",
+  "item": {
+    "id": 2,
+    "name": "Отвертка",
+    "description": "Аккумуляторная отвертка",
+    "available": true,
+    "ownerId": 4,
+    "requestId": null,
+    "lastBooking": null,
+    "nextBooking": null,
+    "comments": []
+  },
+  "booker": {
+    "id": 1,
+    "name": "updateName",
+    "email": "updateName@user.com"
+  },
+  "bookerId": 0
+}

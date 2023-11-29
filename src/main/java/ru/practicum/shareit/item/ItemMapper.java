@@ -10,8 +10,8 @@ public class ItemMapper {
         return new ItemDto()
                 .setId(item.getId())
                 .setName(item.getName())
+                .setRequestId(item.getRequestId())
                 .setOwnerId(item.getOwnerId())
-                .setRequest(item.getRequest())
                 .setDescription(item.getDescription())
                 .setAvailable(item.getAvailable());
     }

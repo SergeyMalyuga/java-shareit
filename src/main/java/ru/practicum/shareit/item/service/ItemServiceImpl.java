@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import ru.practicum.shareit.booking.Booking;
@@ -129,7 +131,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItemForOwner(int ownerId) {
+    public List<ItemDto> getAllItemForOwner(int ownerId, Optional<Integer> from, Optional<Integer> size) {
+        if (from.isPresent() && size.isPresent()) {
+            int totalPages = itemRepository.findByOwnerId(ownerId,
+                    PageRequest.of(from.get(), size.get())).getTotalPages();
+            if (totalPages > from.get()) {
+                return itemRepository.findByOwnerId(ownerId,
+                                PageRequest.of(from.get(), size.get(), Sort.by("id").descending())).stream()
+                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+            } else {
+                return itemRepository.findByOwnerId(ownerId,
+                                PageRequest.of(totalPages - 1, size.get(), Sort.by("id").descending())).stream()
+                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+            }
+        }
         List<Item> itemList = itemRepository.findByOwnerId(ownerId).stream()
                 .sorted(Comparator.comparingInt(Item::getId)).collect(Collectors.toList());
         List<ItemDto> itemDtoList = new ArrayList<>();
@@ -141,17 +156,34 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItem(String request) {
+    public List<ItemDto> searchItem(String request, Optional<Integer> from, Optional<Integer> size) {
         Set<Item> itemsList = new HashSet<>();
         if (request.isBlank()) {
             return new ArrayList<>();
         }
-        itemsList.addAll(itemRepository.findByNameIgnoreCaseContaining(request));
-        itemsList.addAll(itemRepository.findByDescriptionIgnoreCaseContaining(request));
-        List<ItemDto> itemsListSorted = itemsList.stream().filter(e -> e.getAvailable() == true)
-                .sorted(Comparator.comparing(Item::getName))
-                .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
-        return itemsListSorted;
+        if (from.isPresent() && size.isPresent()) {
+            int totalPages = itemRepository
+                    .findByNameOrDescriptionWithPagination(request, PageRequest.of(from.get(),
+                            size.get())).getTotalPages();
+            if (totalPages > from.get()) {
+                return itemRepository
+                        .findByNameOrDescriptionWithPagination(request, PageRequest.of(from.get(), size.get(),
+                                Sort.by("id").descending())).getContent().stream()
+                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+            } else {
+                return itemRepository
+                        .findByNameOrDescriptionWithPagination(request, PageRequest.of(totalPages - 1, size.get(),
+                                Sort.by("id").descending())).getContent().stream()
+                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+            }
+        } else {
+            itemsList.addAll(itemRepository.findByNameIgnoreCaseContaining(request));
+            itemsList.addAll(itemRepository.findByDescriptionIgnoreCaseContaining(request));
+            List<ItemDto> itemsListSorted = itemsList.stream().filter(e -> e.getAvailable() == true)
+                    .sorted(Comparator.comparing(Item::getName))
+                    .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+            return itemsListSorted;
+        }
     }
 
     @Override
@@ -177,7 +209,7 @@ public class ItemServiceImpl implements ItemService {
             } else {
                 throw new PostWithoutBookingException("Пользователь с id:" + userId
                         + " не может оставить комментарий, " +
-                        "т.к. не брал " + itemDto.getName() + " вещь в аренду.");
+                        "т.к. не брал " + itemDto.getName() + " в аренду.");
             }
         } else {
             throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");

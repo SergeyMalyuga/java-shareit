@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -15,7 +16,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+
+@Accessors(chain = true)
 @Table(name = "bookings")
 public class Booking {
 

@@ -1,6 +1,9 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -18,9 +21,11 @@ import ru.practicum.shareit.user.dao.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Accessors(chain = true)
 public class BookingServiceImpl implements BookingService {
 
     @Autowired
@@ -68,14 +73,32 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingCurrentUser(int userId, String state) {
+    public List<BookingDto> getAllBookingCurrentUser(int userId, String state, Optional<Integer> from,
+                                                     Optional<Integer> size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoDataFoundException("Пользователь с id:" + userId + " не найден."));
         switch (state) {
             case "ALL":
-                return bookingRepository.findByBookerEquals(user).stream().sorted((e1, e2) ->
-                                e2.getStart().compareTo(e1.getStart())).map(e -> bookingMapper.bookingDto(e))
-                        .collect(Collectors.toList());
+                if (from.isPresent() && size.isPresent()) {
+                    int totalPages = bookingRepository.findByBookerIdWithPagination(userId, PageRequest.of(from.get(),
+                            size.get())).getTotalPages();
+                    if (totalPages > from.get()) {
+                        return bookingRepository.findByBookerIdWithPagination(userId, PageRequest.of(from.get(),
+                                        size.get())).getContent()
+                                .stream().sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))
+                                .map(e -> bookingMapper.bookingDto(e))
+                                .collect(Collectors.toList());
+                    } else {
+                        return bookingRepository.findByBookerIdWithPagination(userId,
+                                        PageRequest.of(totalPages - 1, size.get())).getContent()
+                                .stream().map(e -> bookingMapper.bookingDto(e))
+                                .collect(Collectors.toList());
+                    }
+                } else {
+                    return bookingRepository.findByBookerEquals(user).stream().sorted((e1, e2) ->
+                                    e2.getStart().compareTo(e1.getStart())).map(e -> bookingMapper.bookingDto(e))
+                            .collect(Collectors.toList());
+                }
             case "REJECTED":
                 return bookingRepository.findByBookerEquals(user).stream()
                         .filter(e -> e.getStatus().toString().equals("REJECTED")).sorted((e1, e2) ->
@@ -107,9 +130,9 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-
     @Override
-    public List<BookingDto> getAllBookingCurrentOwner(int userId, String state) {
+    public List<BookingDto> getAllBookingCurrentOwner(int userId, String state,
+                                                      Optional<Integer> from, Optional<Integer> size) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoDataFoundException("Пользователь с id:" + userId + " не найден."));
         List<Booking> ownerBookingList = new ArrayList<>();
@@ -119,8 +142,24 @@ public class BookingServiceImpl implements BookingService {
         }
         switch (state) {
             case "ALL":
-                return ownerBookingList.stream().sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))
-                        .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
+                if (from.isPresent() && size.isPresent()) {
+                    int totalPages = bookingRepository.findByItemOwnerId(userId, PageRequest.of(from.get(),
+                            size.get())).getTotalPages();
+                    if (totalPages > from.get()) {
+                        return bookingRepository.findByItemOwnerId(userId,
+                                        PageRequest.of(from.get(), size.get(), Sort.by("id").descending()))
+                                .getContent().stream()
+                                .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
+                    } else {
+                        return bookingRepository.findByItemOwnerId(userId,
+                                        PageRequest.of(totalPages - 1, size.get(), Sort.by("id")
+                                                .descending())).getContent().stream()
+                                .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
+                    }
+                } else {
+                    return ownerBookingList.stream().sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))
+                            .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
+                }
             case "REJECTED":
                 return ownerBookingList.stream().filter(e -> e.getStatus().toString().equals("REJECTED"))
                         .sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))
@@ -158,7 +197,6 @@ public class BookingServiceImpl implements BookingService {
             throw new NoDataFoundException("Подтверждение или отклонение бронирования может осуществлять" +
                     "только владелец вещи.");
         }
-
     }
 
     @Override

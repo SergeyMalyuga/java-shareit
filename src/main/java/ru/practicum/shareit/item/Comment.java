@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
+@Accessors(chain = true)
 @NoArgsConstructor
 @Table(name = "comments")
 public class Comment {

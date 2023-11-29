@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "name": "Аккумуляторная дрель",
+  "description": "Аккумуляторная дрель + аккумулятор",
+  "available": true,
+  "ownerId": 1,
+  "requestId": null,
+  "lastBooking": null,
+  "nextBooking": null,
+  "comments": []
+}
