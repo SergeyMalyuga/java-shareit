@@ -109,15 +109,16 @@ class ItemServiceImplSpringBooTest {
 
     @Test
     void getAllItemForOwner() {
-        List<ItemDto> itemDtoList = itemService.getAllItemForOwner(1, Optional.of(0), Optional.of(3));
+        List<ItemDto> itemDtoList = itemService.getAllItemForOwner(1, Optional.of(0),
+                Optional.of(3));
         List<Item> dbItem = entityManager.createQuery("FROM Item WHERE ownerId = 1").getResultList();
         assertThat(dbItem.size(), equalTo(itemDtoList.size()));
     }
 
     @Test
     void searchItem() {
-        List<ItemDto> itemDtoList = itemService.searchItem("Молоток", Optional.ofNullable(null)
-                , Optional.ofNullable(null));
+        List<ItemDto> itemDtoList = itemService.searchItem("Молоток", Optional.ofNullable(null),
+                Optional.ofNullable(null));
         List<Item> dbItem = entityManager.createQuery("FROM Item WHERE name LIKE('%Молоток%')").getResultList();
         assertThat(dbItem.size(), equalTo(itemDtoList.size()));
     }
@@ -126,7 +127,8 @@ class ItemServiceImplSpringBooTest {
     void addComment() throws InterruptedException {
         TimeUnit.SECONDS.sleep(3);
         CommentDto newComment = itemService.addComment(1, 2, comment);
-        Comment dbComment = entityManager.createQuery("FROM Comment WHERE author = 2", Comment.class).getSingleResult();
+        Comment dbComment = entityManager.createQuery("FROM Comment WHERE author = 2",
+                Comment.class).getSingleResult();
         assertThat(newComment.getId(), equalTo(dbComment.getId()));
     }
 }

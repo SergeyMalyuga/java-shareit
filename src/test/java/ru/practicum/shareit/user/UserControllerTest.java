@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;

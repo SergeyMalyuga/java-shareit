@@ -36,8 +36,8 @@ class RequestServiceImplTest {
     void setUp() {
 
         request.setId(1).setDescription("описание").setRequesterId(100).setCreated(LocalDateTime.now());
-        request2.setId(1).setDescription("описание2").setRequesterId(200).setCreated(LocalDateTime.now());
-        request3.setId(1).setDescription("описание3").setRequesterId(300).setCreated(LocalDateTime.now());
+        request2.setId(2).setDescription("описание2").setRequesterId(200).setCreated(LocalDateTime.now());
+        request3.setId(3).setDescription("описание3").setRequesterId(300).setCreated(LocalDateTime.now());
         Collections.addAll(requestList, request, request2, request3);
         requestMapper = new RequestMapper();
     }

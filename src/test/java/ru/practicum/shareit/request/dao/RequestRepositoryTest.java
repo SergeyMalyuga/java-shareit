@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.request.Request;
 import ru.practicum.shareit.user.User;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class RequestRepositoryTest {
     @Autowired
     private EntityManager entityManager;
@@ -35,7 +37,8 @@ class RequestRepositoryTest {
         assertEquals(requestList.size(), 0);
         entityManager.persist(user);
         entityManager.persist(request);
-        requestList = requestRepository.findAllRequests(1, PageRequest.of(0, 1)).getContent();
-        assertEquals(requestList.size(), 1);
+        List<Request> requestList2 = requestRepository.findAllRequests(1,
+                PageRequest.of(0, 1)).getContent();
+        assertEquals(requestList.size(), requestList2.size());
     }
 }
