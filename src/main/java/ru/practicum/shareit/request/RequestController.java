@@ -6,7 +6,6 @@ import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.service.RequestService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +34,7 @@ public class RequestController {
     @GetMapping("/all")
     public List<RequestDto> getAllRequestsList(@RequestHeader("X-Sharer-User-Id") int userId
             , @RequestParam(name = "from", required = false) Optional<Integer> from
-            , @RequestParam(name = "size", required = false) Optional<Integer>  size) {
+            , @RequestParam(name = "size", required = false) Optional<Integer> size) {
         return requestService.getAllRequests(userId, from, size);
     }
 }
