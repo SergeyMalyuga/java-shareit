@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BookingRepositoryTest {
     @Autowired
     private EntityManager entityManager;
@@ -62,7 +64,7 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void findByBookerIdWithPagination() {
+    void findByBookerIdWithPagination_Should_Return_BookingList() {
         List<Booking> dbBookingList = entityManager.createQuery("FROM Booking WHERE booker = 1", Booking.class)
                 .getResultList();
         assertEquals(3, dbBookingList.size());

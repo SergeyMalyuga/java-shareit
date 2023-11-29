@@ -21,4 +21,6 @@ public interface UserService {
     void removeUserById(int userId);
 
     UserDto updateUser(int userId, Map<Object, Object> fields);
+
+    void checkEmailForDuplicate(String email);
 }

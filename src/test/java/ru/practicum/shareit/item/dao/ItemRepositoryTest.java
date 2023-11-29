@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ItemRepositoryTest {
 
     private Item item;
@@ -44,7 +46,7 @@ class ItemRepositoryTest {
     }
 
     @Test
-    void findByNameOrDescriptionWithPagination() {
+    void findByNameOrDescriptionWithPagination_Should_Return_ItemList() {
         List<Item> itemList = itemRepository
                 .findByNameOrDescriptionWithPagination("Молоток", PageRequest.of(0, 1)).getContent();
         assertEquals(1, itemList.size());

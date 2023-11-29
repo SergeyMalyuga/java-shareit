@@ -8,7 +8,10 @@ import java.util.Optional;
 
 public interface RequestService {
     RequestDto addRequest(Request request, int userId);
-    List<RequestDto> getRequestsList(int UserId);
+
+    List<RequestDto> getRequestsList(int userId);
+
     RequestDto getRequestById(int requestId, int userId);
+
     List<RequestDto> getAllRequests(int userId, Optional<Integer> from, Optional<Integer> size);
 }

@@ -68,25 +68,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(int userId, Map<Object, Object> fields) {
-        if (getUserById(userId) != null) {
-            User user = getUserById(userId);
-            fields.forEach((key, value) -> {
-                Field field = ReflectionUtils.findField(User.class, (String) key);
-                if (((String) key).equalsIgnoreCase("email") && !user.getEmail()
-                        .equalsIgnoreCase((String) value)) {
-                    checkEmailForDuplicate((String) value);
-                }
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, user, value);
-            });
-            userRepository.save(user);
-            return userMapper.toUserDto(user);
-        } else {
-            throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
-        }
+        User user = getUserById(userId);
+        fields.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(User.class, (String) key);
+            if (((String) key).equalsIgnoreCase("email") && !user.getEmail()
+                    .equalsIgnoreCase((String) value)) {
+                checkEmailForDuplicate((String) value);
+            }
+            field.setAccessible(true);
+            ReflectionUtils.setField(field, user, value);
+        });
+        userRepository.save(user);
+        return userMapper.toUserDto(user);
     }
 
-    private void checkEmailForDuplicate(String email) {
+    @Override
+    public void checkEmailForDuplicate(String email) {
         List<User> userList = getAllUsers();
         for (User user : userList) {
             if (user.getEmail().equalsIgnoreCase(email)) {
