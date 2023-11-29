@@ -24,13 +24,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = BookingController.class)
 class BookingControllerTest {
@@ -65,7 +62,7 @@ class BookingControllerTest {
         booking2 = new Booking().setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
                 .setStart(LocalDateTime.now().plusMinutes(1)).setEnd(LocalDateTime.now()
                         .plusHours(1)).setItemId(1).setBookerId(1);
-        booking3 = new Booking().setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
+        booking3 = new Booking().setId(3).setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
                 .setStart(LocalDateTime.now().plusMinutes(1)).setEnd(LocalDateTime.now()
                         .plusHours(1)).setItemId(1).setBookerId(1);
         bookingMapper.setUserMapper(new UserMapper());
@@ -75,7 +72,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void addBooking() throws Exception {
+    void addBooking_Should_Status_IsOk() throws Exception {
         when(bookingService.addBooking(Mockito.any(Booking.class), Mockito.anyInt()))
                 .thenReturn(bookingMapper.bookingDto(booking));
         Map<String, String> query = new HashMap();
@@ -87,22 +84,44 @@ class BookingControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
     }
 
     @Test
-    void confirmationOrRejectionBooking() {
+    void getBookingById_Should_Status_IsOk() throws Exception {
+        when(bookingService.getBookingById(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(bookingMapper.bookingDto(booking3));
+        mvc.perform(get("/bookings/3").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(booking3.getId())))
+                .andExpect(jsonPath("$.status", is(booking3.getStatus().toString())));
     }
 
     @Test
-    void getBookingById() {
+    void getAllBookingCurrentUser_Should_Status_IsOk() throws Exception {
+        when(bookingService.getAllBookingCurrentUser(Mockito.anyInt(), Mockito.anyString(),
+                Mockito.any(Optional.class), Mockito.any(Optional.class)))
+                .thenReturn(bookingDtoList);
+        mvc.perform(get("/bookings").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAllBookingCurrentUser() {
+    void getAllBookingCurrentOwner_Should_Status_IsOk() throws Exception {
+        when(bookingService.getAllBookingCurrentOwner(Mockito.anyInt(), Mockito.anyString(),
+                Mockito.any(Optional.class), Mockito.any(Optional.class)))
+                .thenReturn(bookingDtoList);
+        mvc.perform(get("/bookings/owner").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAllBookingCurrentOwner() {
+    void confirmationOrRejectionBooking_Should_Status_IsOk() throws Exception {
+        when(bookingService.confirmationOrRejectionBooking(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString()))
+                .thenReturn(bookingMapper.bookingDto(booking));
+        mvc.perform(patch("/bookings/1").header("X-Sharer-User-Id", 3)
+                        .param("approved", "true"))
+                .andExpect(status().isOk());
     }
 }
