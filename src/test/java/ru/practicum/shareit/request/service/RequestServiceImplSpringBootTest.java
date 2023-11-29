@@ -95,7 +95,7 @@ class RequestServiceImplSpringBootTest {
         Optional<Integer> from = Optional.of(0);
         Optional<Integer> size = Optional.of(2);
         List<RequestDto> methodRequest = requestService.getAllRequests(1, from, size);
-        Query query = entityManager.createQuery("FROM Request WHERE requesterId = 1");
+        Query query = entityManager.createQuery("FROM Request WHERE requesterId != 1");
         List<RequestDto> dbRequestDtotListList = query.getResultList();
         System.out.println(methodRequest.size());
         assertThat(dbRequestDtotListList.size(), equalTo(methodRequest.size()));

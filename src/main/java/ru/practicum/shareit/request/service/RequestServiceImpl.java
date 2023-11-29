@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NoDataFoundException;
+import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDtoMapper;
@@ -77,9 +78,14 @@ public class RequestServiceImpl implements RequestService {
         if (from.isPresent() && size.isPresent()) {
             List<RequestDto> requestDtoList = new ArrayList<>();
             List<ItemRequestDto> itemRequestDtoList = new ArrayList<>();
-            List<Request> requestList = requestRepository
-                    .findAllRequests(userId, PageRequest.of(from.get(), size.get()))
-                    .getContent();
+            List<Request> requestList;
+            if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
+                requestList = requestRepository
+                        .findAllRequests(userId, PageRequest.of((int) Math.ceil(from.get() / size.get()), size.get()))
+                        .getContent();
+            } else {
+                throw new UnavailableItemException("Не допустимое значение.");
+            }
             for (Request request : requestList) {
                 itemRequestDtoList.addAll(itemRepository.findByRequestId(request.getId())
                         .stream().map(e -> itemRequestDtoMapper.toItemRequestDto(e)).collect(Collectors.toList()));
