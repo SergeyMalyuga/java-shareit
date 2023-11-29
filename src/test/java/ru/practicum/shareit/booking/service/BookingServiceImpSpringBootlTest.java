@@ -75,21 +75,21 @@ class BookingServiceImpSpringBootlTest {
     }
 
     @Test
-    void addBooking() {
+    void addBooking_Should_Return_Booking() {
         bookingService.addBooking(booking, 2);
         Booking dbBooking = entityManager.createQuery("FROM Booking WHERE id = 1", Booking.class).getSingleResult();
         assertThat(dbBooking.getId(), equalTo(booking.getId()));
     }
 
     @Test
-    void getBookingById() {
+    void getBookingById_Should_Return_Booking_By_Id() {
         BookingDto newBookingDto = bookingService.addBooking(booking, 2);
         Booking dbBooking = entityManager.createQuery("FROM Booking WHERE id = 1", Booking.class).getSingleResult();
         assertThat(dbBooking.getId(), equalTo(newBookingDto.getId()));
     }
 
     @Test
-    void getAllBookingCurrentUser() {
+    void getAllBookingCurrentUser_Should_Return_BookingDtoList_CurrentUser() {
         List<BookingDto> newBookingDtoList = bookingService.getAllBookingCurrentUser(1, "ALL",
                 Optional.ofNullable(null), Optional.ofNullable(null));
         List<BookingDto> dbBookingDtoList = entityManager.createQuery("FROM Booking WHERE booker = 1")
@@ -98,7 +98,7 @@ class BookingServiceImpSpringBootlTest {
     }
 
     @Test
-    void getAllBookingCurrentOwner() {
+    void getAllBookingCurrentOwner_Should_Return_BookingDtoList_Owner() {
         List<BookingDto> newBookingDtoList = bookingService.getAllBookingCurrentOwner(1, "ALL",
                 Optional.ofNullable(null), Optional.ofNullable(null));
         List<BookingDto> dbBookingDtoList = entityManager.createQuery("FROM Booking WHERE item.ownerId = 1")

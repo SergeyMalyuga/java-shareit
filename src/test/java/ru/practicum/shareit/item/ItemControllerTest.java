@@ -64,7 +64,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void addItem() throws Exception {
+    void addItem_Should_Return_Item() throws Exception {
         when(itemService.addItem(Mockito.anyInt(), Mockito.any(Item.class))).thenReturn(itemMapper.itemDto(item));
         mvc.perform(post("/items")
                         .content(gson.toJson(item))
@@ -79,7 +79,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void getItemById() throws Exception {
+    void getItemById_Should_Return_Item_By_Id() throws Exception {
         when(itemService.getItemByIdDto(Mockito.anyInt(), Mockito.anyInt())).thenReturn(itemMapper.itemDto(item));
         mvc.perform(get("/items/1").header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
@@ -89,7 +89,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void getAllItemForOwner() throws Exception {
+    void getAllItemForOwner_Should_Return_ItemDtoList() throws Exception {
         when(itemService.getAllItemForOwner(Mockito.anyInt(), Mockito.any(Optional.class),
                 Mockito.any(Optional.class))).thenReturn(itemList);
 
@@ -106,7 +106,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void updateItem() throws Exception {
+    void updateItem_Should_Return_UpdateItemName() throws Exception {
         item2.setName("Дисковая пила");
         when(itemService.updateItem(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyMap()))
                 .thenReturn(itemMapper.itemDto(item2));
@@ -122,7 +122,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void searchItem() throws Exception {
+    void searchItem_Should_Return_ItemDtoList() throws Exception {
         when(itemService.searchItem(Mockito.anyString(), Mockito.any(Optional.class),
                 Mockito.any(Optional.class))).thenReturn(itemList);
 
@@ -132,7 +132,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void addComment() throws Exception {
+    void addComment_Should_Return_Comment() throws Exception {
         when(itemService.addComment(Mockito.anyInt(), Mockito.anyInt(),
                 Mockito.any(Comment.class))).thenReturn(commentDto);
 
