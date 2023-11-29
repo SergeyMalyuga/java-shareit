@@ -63,7 +63,7 @@ class RequestServiceImplSpringBootTest {
     }
 
     @Test
-    void addRequest() {
+    void addRequest_Should_Return_Request() {
         Request request4 = new Request().setDescription("описание").setCreated(LocalDateTime.now());
         requestService.addRequest(request4, 3);
         TypedQuery<Request> query = entityManager.createQuery("FROM Request WHERE id = :id", Request.class);
@@ -72,7 +72,7 @@ class RequestServiceImplSpringBootTest {
     }
 
     @Test
-    void getRequestsList() {
+    void getRequestsList_Should_Return_RequestList() {
         List<RequestDto> methodRequestList = requestService.getRequestsList(1);
         Query query = entityManager.createQuery("FROM Request WHERE requesterId = 1");
         List<Request> dbRequestList = query.getResultList();
@@ -81,7 +81,7 @@ class RequestServiceImplSpringBootTest {
     }
 
     @Test
-    void getRequestById() {
+    void getRequestById_Should_Return_Request_By_Id() {
         RequestDto methodRequestList = requestService.getRequestById(1, 1);
         TypedQuery<Request> query = entityManager.createQuery("FROM Request WHERE id = 1", Request.class);
         RequestDto dbRequest = requestMapper.toRequestDto(query.getSingleResult());
@@ -91,11 +91,11 @@ class RequestServiceImplSpringBootTest {
     }
 
     @Test
-    void getAllRequests() {
+    void getAllRequests_Should_Return_All_Requests() {
         Optional<Integer> from = Optional.of(0);
         Optional<Integer> size = Optional.of(2);
         List<RequestDto> methodRequest = requestService.getAllRequests(1, from, size);
-        Query query = entityManager.createQuery("FROM Request WHERE requesterId = 1");
+        Query query = entityManager.createQuery("FROM Request WHERE requesterId != 1");
         List<RequestDto> dbRequestDtotListList = query.getResultList();
         System.out.println(methodRequest.size());
         assertThat(dbRequestDtotListList.size(), equalTo(methodRequest.size()));

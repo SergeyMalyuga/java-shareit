@@ -20,7 +20,6 @@ public class BookingController {
 
     @PostMapping
     public BookingDto addBooking(@RequestBody Booking booking, @RequestHeader("X-Sharer-User-Id") int userId) {
-        // userService.getUserById(userId);
         return bookingService.addBooking(booking, userId);
     }
 

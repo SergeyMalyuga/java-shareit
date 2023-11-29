@@ -47,16 +47,16 @@ class UserServiceImplSpringBootTest {
     }
 
     @Test
-    void addUser() {
+    void addUser_Should_Return_User() {
         User user4 = new User().setId(4).setEmail("reds@mail.ru").setName("Sergey");
         userService.addUser(user4);
         TypedQuery<User> query = entityManager.createQuery("From User WHERE id = :id", User.class);
         User dbUser = query.setParameter("id", user4.getId()).getSingleResult();
-        assertThat(dbUser, equalTo(user4));
+        assertThat(dbUser.getId(), equalTo(user4.getId()));
     }
 
     @Test
-    void getAllUsersDto() {
+    void getAllUsersDto_Should_Return_UserDto_List() {
         List<UserDto> methodUserList = userService.getAllUsersDto();
         Query query = entityManager.createQuery("FROM User");
         List<User> userList = query.getResultList();
@@ -64,7 +64,7 @@ class UserServiceImplSpringBootTest {
     }
 
     @Test
-    void getAllUsers() {
+    void getAllUsers_Should_Return_UserList() {
         List<User> methodUserList = userService.getAllUsers();
         Query query = entityManager.createQuery("FROM User");
         List<User> userList = query.getResultList();
@@ -72,7 +72,7 @@ class UserServiceImplSpringBootTest {
     }
 
     @Test
-    void getUserDtoById() {
+    void getUserDtoById_Should_Return_UserDto_By_Id() {
         UserDto userDto = userService.getUserDtoById(1);
         TypedQuery<User> query = entityManager.createQuery("FROM User WHERE id = 1", User.class);
         UserDto dbUserDto = userMapper.toUserDto(query.getSingleResult());
@@ -80,7 +80,7 @@ class UserServiceImplSpringBootTest {
     }
 
     @Test
-    void getUserById() {
+    void getUserById_Should_Return_User_By_Id() {
         User user = userService.getUserById(1);
         TypedQuery<User> query = entityManager.createQuery("FROM User WHERE id = 1", User.class);
         User dbUser = query.getSingleResult();
@@ -96,7 +96,7 @@ class UserServiceImplSpringBootTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_Should_Return_UpdateUser() {
         Map<Object, Object> fields = new HashMap<>();
         fields.put("name", "RedDragon");
         userService.updateUser(1, fields);

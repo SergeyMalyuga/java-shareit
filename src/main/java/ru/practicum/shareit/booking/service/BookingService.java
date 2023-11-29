@@ -16,4 +16,6 @@ public interface BookingService {
     List<BookingDto> getAllBookingCurrentOwner(int userId, String state, Optional<Integer> from, Optional<Integer> size);
 
     BookingDto confirmationOrRejectionBooking(int bookingId, int userId, String bookingStatus);
+
+    Booking getBookingByOwner(int bookingId, int userId);
 }

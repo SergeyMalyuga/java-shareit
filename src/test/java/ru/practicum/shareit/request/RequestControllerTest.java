@@ -59,7 +59,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void postRequest() throws Exception {
+    void addRequest_Should_Return_Request() throws Exception {
         when(requestService.addRequest(Mockito.any(Request.class), Mockito.anyInt())).thenReturn(requestDto);
         requestService.addRequest(request, 1);
         Map<String, String> request = new HashMap<>();
@@ -76,7 +76,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getRequestsList() throws Exception {
+    void getRequestsList_Should_Return_RequestList() throws Exception {
         when(requestService.getRequestsList(Mockito.anyInt())).thenReturn(requestDtoList);
         requestService.getRequestsList(1);
 
@@ -95,7 +95,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getRequestById() throws Exception {
+    void getRequestById_Should_Return_Request_By_Id() throws Exception {
         when(requestService.getRequestById(Mockito.anyInt(), Mockito.anyInt())).thenReturn(requestDto2);
         requestService.getRequestById(1, 1);
 
@@ -111,7 +111,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getAllRequestsList() throws Exception {
+    void getAllRequests_Should_Return_All_Requests() throws Exception {
         when(requestService.getAllRequests(Mockito.anyInt(), Mockito.any(Optional.class), Mockito.any(Optional.class)))
                 .thenReturn(requestDtoList);
         Optional<Integer> from = Optional.of(0);
