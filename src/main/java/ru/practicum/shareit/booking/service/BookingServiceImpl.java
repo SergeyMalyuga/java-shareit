@@ -80,19 +80,15 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 if (from.isPresent() && size.isPresent()) {
-                    int totalPages = bookingRepository.findByBookerIdWithPagination(userId, PageRequest.of(from.get(),
-                            size.get())).getTotalPages();
-                    if (totalPages > from.get()) {
-                        return bookingRepository.findByBookerIdWithPagination(userId, PageRequest.of(from.get(),
-                                        size.get())).getContent()
+                    if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
+                        return bookingRepository.findByBookerIdWithPagination(userId,
+                                        PageRequest.of((int) Math.ceil((double) from.get() / size.get()),
+                                                size.get())).getContent()
                                 .stream().sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))
                                 .map(e -> bookingMapper.bookingDto(e))
                                 .collect(Collectors.toList());
                     } else {
-                        return bookingRepository.findByBookerIdWithPagination(userId,
-                                        PageRequest.of(totalPages - 1, size.get())).getContent()
-                                .stream().map(e -> bookingMapper.bookingDto(e))
-                                .collect(Collectors.toList());
+                        throw new UnavailableItemException("Не допустимое значение.");
                     }
                 } else {
                     return bookingRepository.findByBookerEquals(user).stream().sorted((e1, e2) ->
@@ -143,18 +139,14 @@ public class BookingServiceImpl implements BookingService {
         switch (state) {
             case "ALL":
                 if (from.isPresent() && size.isPresent()) {
-                    int totalPages = bookingRepository.findByItemOwnerId(userId, PageRequest.of(from.get(),
-                            size.get())).getTotalPages();
-                    if (totalPages > from.get()) {
+                    if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
                         return bookingRepository.findByItemOwnerId(userId,
-                                        PageRequest.of(from.get(), size.get(), Sort.by("id").descending()))
+                                        PageRequest.of((int) Math.ceil((double) from.get() / size.get()),
+                                                size.get(), Sort.by("id").descending()))
                                 .getContent().stream()
                                 .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
                     } else {
-                        return bookingRepository.findByItemOwnerId(userId,
-                                        PageRequest.of(totalPages - 1, size.get(), Sort.by("id")
-                                                .descending())).getContent().stream()
-                                .map(e -> bookingMapper.bookingDto(e)).collect(Collectors.toList());
+                        throw new UnavailableItemException("Не допустимое значение.");
                     }
                 } else {
                     return ownerBookingList.stream().sorted((e1, e2) -> e2.getStart().compareTo(e1.getStart()))

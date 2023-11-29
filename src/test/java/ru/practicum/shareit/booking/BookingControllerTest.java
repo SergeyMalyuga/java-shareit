@@ -24,13 +24,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(controllers = BookingController.class)
 class BookingControllerTest {
@@ -91,18 +89,28 @@ class BookingControllerTest {
     }
 
     @Test
-    void confirmationOrRejectionBooking() {
+    void getBookingById() throws Exception {
+        when(bookingService.getBookingById(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(bookingMapper.bookingDto(booking3));
+        mvc.perform(get("/bookings/3").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getBookingById() {
+    void getAllBookingCurrentUser() throws Exception {
+        when(bookingService.getAllBookingCurrentUser(Mockito.anyInt(), Mockito.anyString(),
+                Mockito.any(Optional.class), Mockito.any(Optional.class)))
+                .thenReturn(bookingDtoList);
+        mvc.perform(get("/bookings").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getAllBookingCurrentUser() {
-    }
-
-    @Test
-    void getAllBookingCurrentOwner() {
+    void getAllBookingCurrentOwner() throws Exception {
+        when(bookingService.getAllBookingCurrentOwner(Mockito.anyInt(), Mockito.anyString(),
+                Mockito.any(Optional.class), Mockito.any(Optional.class)))
+                .thenReturn(bookingDtoList);
+        mvc.perform(get("/bookings/owner").header("X-Sharer-User-Id", 3))
+                .andExpect(status().isOk());
     }
 }

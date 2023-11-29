@@ -106,7 +106,8 @@ public class ItemServiceImpl implements ItemService {
                     .filter(e -> e.getEnd().isBefore(LocalDateTime.now()))
                     .sorted((e1, e2) -> e2.getEnd().compareTo(e1.getEnd())).collect(Collectors.toList());
             List<Booking> bookingListLastAfterNow = item.getBookingList().stream()
-                    .filter(e -> e.getEnd().isAfter(LocalDateTime.now()) && !e.getStatus().toString().equals("REJECTED")).collect(Collectors.toList());
+                    .filter(e -> e.getEnd().isAfter(LocalDateTime.now()) && !e.getStatus()
+                            .toString().equals("REJECTED")).collect(Collectors.toList());
             if (bookingListLast.size() >= 1 && bookingListNext.size() >= 1) {
                 itemDto.setLastBooking(bookingMapper.bookingDto(bookingListLast.get(0)));
                 itemDto.getLastBooking().setBookerId(bookingListLast.get(0).getBooker().getId());
@@ -133,16 +134,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAllItemForOwner(int ownerId, Optional<Integer> from, Optional<Integer> size) {
         if (from.isPresent() && size.isPresent()) {
-            int totalPages = itemRepository.findByOwnerId(ownerId,
-                    PageRequest.of(from.get(), size.get())).getTotalPages();
-            if (totalPages > from.get()) {
+            if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
                 return itemRepository.findByOwnerId(ownerId,
-                                PageRequest.of(from.get(), size.get(), Sort.by("id").descending())).stream()
+                                PageRequest.of((int) Math.ceil((double)from.get() / size.get()),
+                                        size.get(), Sort.by("id").descending())).stream()
                         .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
             } else {
-                return itemRepository.findByOwnerId(ownerId,
-                                PageRequest.of(totalPages - 1, size.get(), Sort.by("id").descending())).stream()
-                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+                throw new UnavailableItemException("Не допустимое значение.");
             }
         }
         List<Item> itemList = itemRepository.findByOwnerId(ownerId).stream()
@@ -162,19 +160,14 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
         if (from.isPresent() && size.isPresent()) {
-            int totalPages = itemRepository
-                    .findByNameOrDescriptionWithPagination(request, PageRequest.of(from.get(),
-                            size.get())).getTotalPages();
-            if (totalPages > from.get()) {
+            if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
                 return itemRepository
-                        .findByNameOrDescriptionWithPagination(request, PageRequest.of(from.get(), size.get(),
-                                Sort.by("id").descending())).getContent().stream()
+                        .findByNameOrDescriptionWithPagination(request,
+                                PageRequest.of((int) Math.ceil((double)from.get() / size.get()), size.get(),
+                                        Sort.by("id").descending())).getContent().stream()
                         .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
             } else {
-                return itemRepository
-                        .findByNameOrDescriptionWithPagination(request, PageRequest.of(totalPages - 1, size.get(),
-                                Sort.by("id").descending())).getContent().stream()
-                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+                throw new UnavailableItemException("Не допустимое значение.");
             }
         } else {
             itemsList.addAll(itemRepository.findByNameIgnoreCaseContaining(request));
@@ -203,7 +196,8 @@ public class ItemServiceImpl implements ItemService {
             }
             List<Booking> itemListBooking = bookingRepository.findByBookerEquals(user).stream()
                     .filter(e -> e.getItem().getId() == itemId && !e.getStatus().toString()
-                            .equals("REJECTED") && !e.getStart().isAfter(LocalDateTime.now())).collect(Collectors.toList());
+                            .equals("REJECTED") && !e.getStart()
+                            .isAfter(LocalDateTime.now())).collect(Collectors.toList());
             if (!itemListBooking.isEmpty()) {
                 itemDto.getComments().add(commentMapper.toCommentDto(comment));
             } else {
