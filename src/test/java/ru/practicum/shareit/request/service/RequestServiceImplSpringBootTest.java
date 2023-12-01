@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.request.Request;
-import ru.practicum.shareit.request.RequestMapper;
+import ru.practicum.shareit.request.RequestDtoMapper;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -34,6 +35,8 @@ class RequestServiceImplSpringBootTest {
     private final EntityManager entityManager;
     private final RequestService requestService;
     private final UserService userService;
+    private final UserDtoMapper userDtoMapper;
+    private final RequestDtoMapper requestDtoMapper;
 
     private Request request = new Request();
     private Request request2 = new Request();
@@ -41,8 +44,6 @@ class RequestServiceImplSpringBootTest {
     private User user;
     private User user2;
     private User user3;
-    @Autowired
-    private RequestMapper requestMapper;
     List<Request> requestList = new ArrayList<>();
 
     @BeforeEach
@@ -54,21 +55,21 @@ class RequestServiceImplSpringBootTest {
         user = new User().setEmail("serg@mail.ru").setName("Sergey");
         user2 = new User().setEmail("galina@mail.ru").setName("Galina");
         user3 = new User().setEmail("nick@mail.ru").setName("Nick");
-        userService.addUser(user);
-        userService.addUser(user2);
-        userService.addUser(user3);
-        requestService.addRequest(request, 1);
-        requestService.addRequest(request2, 2);
-        requestService.addRequest(request3, 1);
+        userService.addUser(userDtoMapper.toUserDto(user));
+        userService.addUser(userDtoMapper.toUserDto(user2));
+        userService.addUser(userDtoMapper.toUserDto(user3));
+        requestService.addRequest(requestDtoMapper.toRequestDto(request), 1);
+        requestService.addRequest(requestDtoMapper.toRequestDto(request2), 2);
+        requestService.addRequest(requestDtoMapper.toRequestDto(request3), 1);
     }
 
     @Test
     void addRequest_Should_Return_Request() {
         Request request4 = new Request().setDescription("описание").setCreated(LocalDateTime.now());
-        requestService.addRequest(request4, 3);
+        RequestDto requestWithId = requestService.addRequest(requestDtoMapper.toRequestDto(request4), 3);
         TypedQuery<Request> query = entityManager.createQuery("FROM Request WHERE id = :id", Request.class);
-        Request dbRequest = query.setParameter("id", request4.getId()).getSingleResult();
-        assertThat(dbRequest, equalTo(request4));
+        Request dbRequest = query.setParameter("id", requestWithId.getId()).getSingleResult();
+        assertThat(dbRequest.getId(), equalTo(4));
     }
 
     @Test
@@ -84,7 +85,7 @@ class RequestServiceImplSpringBootTest {
     void getRequestById_Should_Return_Request_By_Id() {
         RequestDto methodRequestList = requestService.getRequestById(1, 1);
         TypedQuery<Request> query = entityManager.createQuery("FROM Request WHERE id = 1", Request.class);
-        RequestDto dbRequest = requestMapper.toRequestDto(query.getSingleResult());
+        RequestDto dbRequest = requestDtoMapper.toRequestDto(query.getSingleResult());
         assertThat(dbRequest.getId(), equalTo(methodRequestList.getId()));
         assertThat(dbRequest.getDescription(), equalTo(methodRequestList.getDescription()));
         assertThat(dbRequest.getCreated(), equalTo(methodRequestList.getCreated()));

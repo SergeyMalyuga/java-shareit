@@ -20,11 +20,11 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.exception.UnavailableStateException;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.time.LocalDateTime;
@@ -75,8 +75,8 @@ class BookingServiceImplTest {
                 .setEnd(LocalDateTime.now()).setStart(LocalDateTime.now().plusHours(1)).setItemId(1).setBookerId(1);
         booking3 = new Booking().setId(3).setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
                 .setEnd(LocalDateTime.now()).setStart(LocalDateTime.now().plusHours(1)).setItemId(1).setBookerId(1);
-        bookingMapper.setUserMapper(new UserMapper());
-        bookingMapper.setItemMapper(new ItemMapper());
+        bookingMapper.setUserDtoMapper(new UserDtoMapper());
+        bookingMapper.setItemDtoMapper(new ItemDtoMapper());
         Collections.addAll(itemsList, item);
         Collections.addAll(bookingList, booking, booking2, booking3);
     }

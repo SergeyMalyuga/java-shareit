@@ -5,10 +5,10 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 @Component
-public class ItemMapper {
-
-    public Item toItem(ItemDto item) {
-        return new Item()
+public class ItemDtoMapper {
+    public ItemDto itemDto(Item item) {
+        return new ItemDto()
+                .setId(item.getId())
                 .setName(item.getName())
                 .setRequestId(item.getRequestId())
                 .setOwnerId(item.getOwnerId())

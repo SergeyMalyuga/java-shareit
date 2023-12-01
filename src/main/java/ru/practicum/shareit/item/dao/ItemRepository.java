@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
@@ -20,9 +21,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     List<Item> findByNameIgnoreCaseContaining(String request);
 
-    @Query(value = "SELECT * FROM items WHERE LOWER(name) LIKE LOWER(concat('%', ?1, '%')) or LOWER(description) " +
-            "LIKE LOWER(concat('%', ?1, '%'))", nativeQuery = true)
-    Page<Item> findByNameOrDescriptionWithPagination(String request, Pageable pageable);
+    @Query(value = "SELECT i FROM Item AS i WHERE LOWER(i.name) LIKE LOWER(concat('%', :request, '%')) " +
+            "or LOWER(i.description) LIKE LOWER(concat('%', :request, '%'))")
+    Page<Item> findByNameOrDescriptionWithPagination(@Param("request") String request, Pageable pageable);
 
     List<Item> findByDescriptionIgnoreCaseContaining(String request);
 

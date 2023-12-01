@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface ItemService {
-    ItemDto addItem(int userId, Item item);
+    ItemDto addItem(int userId, ItemDto itemDto);
 
     ItemDto updateItem(int userId, int itemId, Map<Object, Object> fields);
 

@@ -21,6 +21,7 @@ import ru.practicum.shareit.exception.PostWithoutBookingException;
 import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.CommentMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -28,7 +29,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.time.LocalDateTime;
@@ -50,11 +51,13 @@ class ItemServiceImplTest {
     @Mock
     private CommentRepository commentRepository;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private ItemMapper itemMapper;
+    private ItemDtoMapper itemDtoMapper;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private BookingMapper bookingMapper;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private CommentMapper commentMapper;
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private ItemMapper itemMapper;
     private Item item;
     private Item item2;
     private User user;
@@ -76,26 +79,26 @@ class ItemServiceImplTest {
                 .setName("Дрель").setOwnerId(1);
         item2 = new Item().setId(2).setAvailable(true).setDescription("Ручной интсрумент").setName("Молоток")
                 .setOwnerId(1).setRequestId(2);
-        itemMapper = new ItemMapper();
+        itemDtoMapper = new ItemDtoMapper();
         comment = new Comment().setText("Отличный молоток");
         comment2 = new Comment().setId(1).setItem(item2)
                 .setCreated(LocalDateTime.now()).setText("   ");
-        commentDto = new CommentDto().setId(1).setItem(itemMapper.itemDto(item2))
+        commentDto = new CommentDto().setId(1).setItem(itemDtoMapper.itemDto(item2))
                 .setCreated(LocalDateTime.now()).setText("Отличный молоток");
         Collections.addAll(itemList, item);
-        Collections.addAll(itemsDtoList, itemMapper.itemDto(item));
+        Collections.addAll(itemsDtoList, itemDtoMapper.itemDto(item));
         booking = new Booking().setId(1).setStatus(BookingStatus.WAITING).setBooker(user2).setItem(item)
                 .setStart(LocalDateTime.now()).setEnd(LocalDateTime.now()
                         .plusHours(1)).setItemId(1).setBookerId(2);
         bookingList.add(booking);
-        commentMapper.setItemMapper(new ItemMapper());
-        commentMapper.setUserMapper(new UserMapper());
+        commentMapper.setItemDtoMapper(new ItemDtoMapper());
+        commentMapper.setUserDtoMapper(new UserDtoMapper());
     }
 
     @Test
     void addItem_Should_Return_Item() {
         Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
-        ItemDto itemDto = itemService.addItem(1, item);
+        ItemDto itemDto = itemService.addItem(1, itemDtoMapper.itemDto(item));
         assertEquals(user.getId(), itemDto.getOwnerId());
     }
 
@@ -108,7 +111,7 @@ class ItemServiceImplTest {
             }
             throw new NoDataFoundException("");
         });
-        assertThrows(NoDataFoundException.class, () -> itemService.addItem(0, item));
+        assertThrows(NoDataFoundException.class, () -> itemService.addItem(0, itemDtoMapper.itemDto(item)));
 
     }
 

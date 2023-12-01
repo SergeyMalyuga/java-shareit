@@ -7,8 +7,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,13 +17,12 @@ import java.time.LocalDateTime;
 @ToString
 @Accessors(chain = true)
 public class Request {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     @Column(name = "description")
-    @NotBlank(message = "Поле не может быть пустым!")
-    @NotNull(message = "Поле не может быть пустым!")
     private String description;
     @Column(name = "requester_id")
     private int requesterId;

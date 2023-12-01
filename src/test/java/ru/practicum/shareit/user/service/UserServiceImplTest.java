@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -26,6 +27,8 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private UserDtoMapper userDtoMapper;
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     private UserMapper userMapper;
     private User user;
     private User user2;
@@ -38,21 +41,21 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        userMapper = new UserMapper();
+        userDtoMapper = new UserDtoMapper();
         user = new User().setId(1).setEmail("serg@mail.ru").setName("Sergey");
         user2 = new User().setId(2).setEmail("galina@mail.ru").setName("Galina");
         user3 = new User().setId(3).setEmail("nick@mail.ru").setName("Nick");
         Collections.addAll(listUser, user, user2, user3);
-        userDto = userMapper.toUserDto(user);
-        userDto2 = userMapper.toUserDto(user2);
-        userDto3 = userMapper.toUserDto(user3);
+        userDto = userDtoMapper.toUserDto(user);
+        userDto2 = userDtoMapper.toUserDto(user2);
+        userDto3 = userDtoMapper.toUserDto(user3);
         Collections.addAll(listUserDto, userDto, userDto2, userDto3);
     }
 
     @Test
     void addUser_Should_Return_User() {
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
-        UserDto saveUser = userService.addUser(user);
+        UserDto saveUser = userService.addUser(userDtoMapper.toUserDto(user));
         assertNotNull(saveUser);
         assertEquals(user.getId(), saveUser.getId());
     }
@@ -144,7 +147,7 @@ class UserServiceImplTest {
             }
             throw new EmailDuplicateException("");
         });
-        assertThrows(EmailDuplicateException.class, () -> userService.addUser(user));
+        assertThrows(EmailDuplicateException.class, () -> userService.addUser(userDtoMapper.toUserDto(user)));
     }
 
     @Test

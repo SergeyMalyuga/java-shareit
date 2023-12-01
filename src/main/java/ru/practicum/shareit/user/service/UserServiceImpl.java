@@ -6,6 +6,7 @@ import org.springframework.util.ReflectionUtils;
 import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -22,17 +23,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private UserDtoMapper userDtoMapper;
+    @Autowired
     private UserMapper userMapper;
 
     @Override
-    public UserDto addUser(User user) {
-        userRepository.save(user);
-        return userMapper.toUserDto(user);
+    public UserDto addUser(UserDto userDto) {
+        User user = userMapper.toUser(userDto);
+        return userDtoMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
     public List<UserDto> getAllUsersDto() {
-        return userRepository.findAll().stream().map(e -> userMapper.toUserDto(e)).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(e -> userDtoMapper.toUserDto(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserDtoById(int userId) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isPresent()) {
-            return userMapper.toUserDto(optional.get());
+            return userDtoMapper.toUserDto(optional.get());
         } else {
             throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
         }
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService {
             ReflectionUtils.setField(field, user, value);
         });
         userRepository.save(user);
-        return userMapper.toUserDto(user);
+        return userDtoMapper.toUserDto(user);
     }
 
     @Override

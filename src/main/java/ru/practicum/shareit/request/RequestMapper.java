@@ -5,9 +5,8 @@ import ru.practicum.shareit.request.dto.RequestDto;
 
 @Component
 public class RequestMapper {
-    public RequestDto toRequestDto(Request request) {
-        return new RequestDto().setId(request.getId())
-                .setDescription(request.getDescription())
-                .setCreated(request.getCreated());
+
+    public Request toRequest(RequestDto request) {
+        return new Request().setDescription(request.getDescription());
     }
 }

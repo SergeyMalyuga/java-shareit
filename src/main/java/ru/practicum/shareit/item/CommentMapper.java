@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 
 @Component
 @Getter
@@ -13,15 +13,15 @@ import ru.practicum.shareit.user.UserMapper;
 public class CommentMapper {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserDtoMapper userDtoMapper;
 
     @Autowired
-    private ItemMapper itemMapper;
+    private ItemDtoMapper itemDtoMapper;
 
     public CommentDto toCommentDto(Comment comment) {
         return new CommentDto().setId(comment.getId())
-                .setItem(itemMapper.itemDto(comment.getItem()))
-                .setAuthor(userMapper.toUserDto(comment.getAuthor()))
+                .setItem(itemDtoMapper.itemDto(comment.getItem()))
+                .setAuthor(userDtoMapper.toUserDto(comment.getAuthor()))
                 .setText(comment.getText())
                 .setCreated(comment.getCreated())
                 .setAuthorName(comment.getAuthorName());

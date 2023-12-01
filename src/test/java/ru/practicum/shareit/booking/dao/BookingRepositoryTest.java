@@ -8,10 +8,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -52,8 +52,8 @@ class BookingRepositoryTest {
         booking3 = new Booking().setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
                 .setStart(LocalDateTime.now().plusMinutes(1)).setEnd(LocalDateTime.now()
                         .plusHours(1)).setItemId(1).setBookerId(1);
-        bookingMapper.setUserMapper(new UserMapper());
-        bookingMapper.setItemMapper(new ItemMapper());
+        bookingMapper.setUserDtoMapper(new UserDtoMapper());
+        bookingMapper.setItemDtoMapper(new ItemDtoMapper());
         entityManager.persist(user);
         entityManager.persist(user2);
         entityManager.persist(item);

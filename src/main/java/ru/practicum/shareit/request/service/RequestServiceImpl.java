@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDtoMapper;
 import ru.practicum.shareit.request.Request;
+import ru.practicum.shareit.request.RequestDtoMapper;
 import ru.practicum.shareit.request.RequestMapper;
 import ru.practicum.shareit.request.dao.RequestRepository;
 import ru.practicum.shareit.request.dto.RequestDto;
@@ -24,24 +25,26 @@ import java.util.stream.Collectors;
 @Service
 public class RequestServiceImpl implements RequestService {
     @Autowired
-    RequestRepository requestRepository;
+    private RequestRepository requestRepository;
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
     private ItemRequestDtoMapper itemRequestDtoMapper;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    RequestMapper requestMapper;
+    private RequestDtoMapper requestDtoMapper;
+    @Autowired
+    private RequestMapper requestMapper;
 
     @Override
-    public RequestDto addRequest(Request request, int userId) {
+    public RequestDto addRequest(RequestDto requestDto, int userId) {
+        Request request = requestMapper.toRequest(requestDto);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoDataFoundException("Пользователь с id:" + userId + " не найден."));
         request.setRequesterId(userId);
         request.setCreated(LocalDateTime.now());
-        requestRepository.save(request);
-        return requestMapper.toRequestDto(request);
+        return requestDtoMapper.toRequestDto(requestRepository.save(request));
     }
 
     @Override
@@ -54,7 +57,7 @@ public class RequestServiceImpl implements RequestService {
         for (Request request : requestList) {
             itemRequestDtoList.addAll(itemRepository.findByRequestId(request.getId())
                     .stream().map(e -> itemRequestDtoMapper.toItemRequestDto(e)).collect(Collectors.toList()));
-            requestDtoList.add(requestMapper.toRequestDto(request).setItems(itemRequestDtoList));
+            requestDtoList.add(requestDtoMapper.toRequestDto(request).setItems(itemRequestDtoList));
         }
         return requestDtoList;
     }
@@ -68,7 +71,7 @@ public class RequestServiceImpl implements RequestService {
         List<ItemRequestDto> itemRequestDtoList = new ArrayList<>();
         itemRequestDtoList.addAll(itemRepository.findByRequestId(request.getId())
                 .stream().map(e -> itemRequestDtoMapper.toItemRequestDto(e)).collect(Collectors.toList()));
-        return requestMapper.toRequestDto(request).setItems(itemRequestDtoList);
+        return requestDtoMapper.toRequestDto(request).setItems(itemRequestDtoList);
     }
 
     @Override
@@ -90,7 +93,7 @@ public class RequestServiceImpl implements RequestService {
             for (Request request : requestList) {
                 itemRequestDtoList.addAll(itemRepository.findByRequestId(request.getId())
                         .stream().map(e -> itemRequestDtoMapper.toItemRequestDto(e)).collect(Collectors.toList()));
-                requestDtoList.add(requestMapper.toRequestDto(request).setItems(itemRequestDtoList));
+                requestDtoList.add(requestDtoMapper.toRequestDto(request).setItems(itemRequestDtoList));
             }
             return requestDtoList;
         } else {

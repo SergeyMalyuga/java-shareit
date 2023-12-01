@@ -13,6 +13,7 @@ import ru.practicum.shareit.exception.PostWithoutBookingException;
 import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.CommentMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dao.CommentRepository;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -39,6 +40,8 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private CommentRepository commentRepository;
     @Autowired
+    private ItemDtoMapper itemDtoMapper;
+    @Autowired
     private ItemMapper itemMapper;
     @Autowired
     private BookingMapper bookingMapper;
@@ -46,11 +49,12 @@ public class ItemServiceImpl implements ItemService {
     private CommentMapper commentMapper;
 
     @Override
-    public ItemDto addItem(int userId, Item item) {
+    public ItemDto addItem(int userId, ItemDto itemDto) {
+        Item item = itemMapper.toItem(itemDto);
         if (userRepository.findById(userId).isPresent()) {
             item.setOwnerId(userId);
             itemRepository.save(item);
-            return itemMapper.itemDto(item);
+            return itemDtoMapper.itemDto(item);
         } else {
             throw new NoDataFoundException("Пользователь с id:" + userId + " не найден.");
         }
@@ -69,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
                 }
             });
             itemRepository.save(item);
-            return itemMapper.itemDto(item);
+            return itemDtoMapper.itemDto(item);
         } else {
             throw new NoDataFoundException("Пользователь с id:" + userId
                     + " не является владельцем данной вещи. Изменения не сохранены.");
@@ -85,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
         }
         if (optional.isPresent()) {
             Item item = optional.get();
-            ItemDto itemDto = itemMapper.itemDto(optional.get());
+            ItemDto itemDto = itemDtoMapper.itemDto(optional.get());
             if (itemDto.getOwnerId() == userId) {
                 itemDto = addBookingToItem(item, itemDto);
             }
@@ -138,7 +142,7 @@ public class ItemServiceImpl implements ItemService {
                 return itemRepository.findByOwnerId(ownerId,
                                 PageRequest.of((int) Math.ceil((double) from.get() / size.get()),
                                         size.get(), Sort.by("id").descending())).stream()
-                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+                        .map(e -> itemDtoMapper.itemDto(e)).collect(Collectors.toList());
             } else {
                 throw new UnavailableItemException("Не допустимое значение.");
             }
@@ -147,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
                 .sorted(Comparator.comparingInt(Item::getId)).collect(Collectors.toList());
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemList) {
-            ItemDto itemDto = itemMapper.itemDto(item);
+            ItemDto itemDto = itemDtoMapper.itemDto(item);
             itemDtoList.add(addBookingToItem(item, itemDto));
         }
         return itemDtoList;
@@ -165,7 +169,7 @@ public class ItemServiceImpl implements ItemService {
                         .findByNameOrDescriptionWithPagination(request,
                                 PageRequest.of((int) Math.ceil((double) from.get() / size.get()), size.get(),
                                         Sort.by("id").descending())).getContent().stream()
-                        .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+                        .map(e -> itemDtoMapper.itemDto(e)).collect(Collectors.toList());
             } else {
                 throw new UnavailableItemException("Не допустимое значение.");
             }
@@ -174,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
             itemsList.addAll(itemRepository.findByDescriptionIgnoreCaseContaining(request));
             List<ItemDto> itemsListSorted = itemsList.stream().filter(e -> e.getAvailable() == true)
                     .sorted(Comparator.comparing(Item::getName))
-                    .map(e -> itemMapper.itemDto(e)).collect(Collectors.toList());
+                    .map(e -> itemDtoMapper.itemDto(e)).collect(Collectors.toList());
             return itemsListSorted;
         }
     }

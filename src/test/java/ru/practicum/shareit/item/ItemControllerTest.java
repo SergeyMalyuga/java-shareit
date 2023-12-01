@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.LocalDateTimeAdapter;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.User;
@@ -43,7 +44,7 @@ class ItemControllerTest {
     private User user;
     private Comment comment;
     private CommentDto commentDto;
-    private ItemMapper itemMapper;
+    private ItemDtoMapper itemDtoMapper;
     private Gson gson;
     private List<Item> itemList = new ArrayList<>();
 
@@ -56,16 +57,16 @@ class ItemControllerTest {
         item2 = new Item().setId(2).setAvailable(true).setDescription("Ручной интсрумент").setName("Молоток")
                 .setOwnerId(1).setRequestId(2);
         Collections.addAll(itemList, item, item2);
-        itemMapper = new ItemMapper();
+        itemDtoMapper = new ItemDtoMapper();
         comment = new Comment().setId(1).setItem(item2)
                 .setCreated(LocalDateTime.now()).setText("Отличный молоток");
-        commentDto = new CommentDto().setId(1).setItem(itemMapper.itemDto(item2))
+        commentDto = new CommentDto().setId(1).setItem(itemDtoMapper.itemDto(item2))
                 .setCreated(LocalDateTime.now()).setText("Отличный молоток");
     }
 
     @Test
     void addItem_Should_Return_Item() throws Exception {
-        when(itemService.addItem(Mockito.anyInt(), Mockito.any(Item.class))).thenReturn(itemMapper.itemDto(item));
+        when(itemService.addItem(Mockito.anyInt(), Mockito.any(ItemDto.class))).thenReturn(itemDtoMapper.itemDto(item));
         mvc.perform(post("/items")
                         .content(gson.toJson(item))
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -80,7 +81,7 @@ class ItemControllerTest {
 
     @Test
     void getItemById_Should_Return_Item_By_Id() throws Exception {
-        when(itemService.getItemByIdDto(Mockito.anyInt(), Mockito.anyInt())).thenReturn(itemMapper.itemDto(item));
+        when(itemService.getItemByIdDto(Mockito.anyInt(), Mockito.anyInt())).thenReturn(itemDtoMapper.itemDto(item));
         mvc.perform(get("/items/1").header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(item.getId())))
@@ -109,7 +110,7 @@ class ItemControllerTest {
     void updateItem_Should_Return_UpdateItemName() throws Exception {
         item2.setName("Дисковая пила");
         when(itemService.updateItem(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyMap()))
-                .thenReturn(itemMapper.itemDto(item2));
+                .thenReturn(itemDtoMapper.itemDto(item2));
         Map<Object, Object> query = new HashMap<>();
         query.put("name", "Дисковая пила");
 

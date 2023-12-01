@@ -9,11 +9,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.Comment;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -38,6 +39,7 @@ class ItemServiceImplSpringBooTest {
     private final ItemService itemService;
     private final UserService userService;
     private final BookingService bookingService;
+    private final UserDtoMapper userDtoMapper;
     private Item item;
     private Item item2;
     private Item item3;
@@ -47,24 +49,24 @@ class ItemServiceImplSpringBooTest {
     private Booking booking;
     private Comment comment;
     private CommentDto commentDto;
-    private ItemMapper itemMapper;
+    private ItemDtoMapper itemDtoMapper;
     private List<Item> itemList = new ArrayList<>();
 
     @BeforeEach
     private void setUp() {
         user = new User().setEmail("serg@mail.ru").setName("Sergey");
         user2 = new User().setEmail("galina@mail.ru").setName("Galina");
-        userService.addUser(user);
-        userService.addUser(user2);
+        userService.addUser(userDtoMapper.toUserDto(user));
+        userService.addUser(userDtoMapper.toUserDto(user2));
         item = new Item().setAvailable(true).setDescription("Аккумуляторная дрель")
                 .setName("Дрель").setOwnerId(1);
         item2 = new Item().setAvailable(true).setDescription("Ручной интсрумент").setName("Молоток")
                 .setOwnerId(1);
         item3 = new Item().setAvailable(true).setDescription("Пила").setName("Пила дисковая")
                 .setOwnerId(1);
-        itemService.addItem(1, item);
-        itemService.addItem(1, item2);
-        itemMapper = new ItemMapper();
+        itemDtoMapper = new ItemDtoMapper();
+        itemService.addItem(1, itemDtoMapper.itemDto(item));
+        itemService.addItem(1, itemDtoMapper.itemDto(item2));
         booking = new Booking().setItemId(1)
                 .setStart(LocalDateTime.now().plusSeconds(1))
                 .setEnd(LocalDateTime.now().plusSeconds(3));
@@ -75,9 +77,9 @@ class ItemServiceImplSpringBooTest {
 
     @Test
     void addItem_Should_Return_Item() {
-        itemService.addItem(1, item3);
+        itemService.addItem(1, itemDtoMapper.itemDto(item3));
         Item dbItem = entityManager.createQuery("FROM Item WHERE id = 1", Item.class).getSingleResult();
-        assertThat(dbItem.getId(), equalTo(item.getId()));
+        assertThat(dbItem.getId(), equalTo(1));
         assertThat(dbItem.getName(), equalTo(item.getName()));
     }
 

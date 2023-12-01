@@ -13,10 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.LocalDateTimeAdapter;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
@@ -65,8 +65,8 @@ class BookingControllerTest {
         booking3 = new Booking().setId(3).setStatus(BookingStatus.WAITING).setBooker(user).setItem(item)
                 .setStart(LocalDateTime.now().plusMinutes(1)).setEnd(LocalDateTime.now()
                         .plusHours(1)).setItemId(1).setBookerId(1);
-        bookingMapper.setUserMapper(new UserMapper());
-        bookingMapper.setItemMapper(new ItemMapper());
+        bookingMapper.setUserDtoMapper(new UserDtoMapper());
+        bookingMapper.setItemDtoMapper(new ItemDtoMapper());
         Collections.addAll(bookingDtoList, bookingMapper.bookingDto(booking),
                 bookingMapper.bookingDto(booking2), bookingMapper.bookingDto(booking3));
     }

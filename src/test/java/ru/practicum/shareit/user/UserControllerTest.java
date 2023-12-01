@@ -34,7 +34,7 @@ class UserControllerTest {
     private UserService userService;
     @Autowired
     private MockMvc mvc;
-    private UserMapper userMapper;
+    private UserDtoMapper userDtoMapper;
     private User user;
     private User user2;
     private User user3;
@@ -48,20 +48,20 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         gson = new Gson();
-        userMapper = new UserMapper();
+        userDtoMapper = new UserDtoMapper();
         user = new User().setId(1).setEmail("serg@mail.ru").setName("Sergey");
         user2 = new User().setId(2).setEmail("galina@mail.ru").setName("Galina");
         user3 = new User().setId(3).setEmail("nick@mail.ru").setName("Nick");
         Collections.addAll(listUser, user, user2, user3);
-        userDto = userMapper.toUserDto(user);
-        userDto2 = userMapper.toUserDto(user2);
-        userDto3 = userMapper.toUserDto(user3);
+        userDto = userDtoMapper.toUserDto(user);
+        userDto2 = userDtoMapper.toUserDto(user2);
+        userDto3 = userDtoMapper.toUserDto(user3);
         Collections.addAll(listUserDto, userDto, userDto2, userDto3);
     }
 
     @Test
     void addUser() throws Exception {
-        when(userService.addUser(Mockito.any(User.class))).thenReturn(userDto);
+        when(userService.addUser(Mockito.any(UserDto.class))).thenReturn(userDto);
         mvc.perform(post("/users")
                         .content(gson.toJson(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)

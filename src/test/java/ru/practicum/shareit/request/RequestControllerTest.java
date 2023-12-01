@@ -36,6 +36,7 @@ class RequestControllerTest {
     private RequestService requestService;
     @Autowired
     private MockMvc mvc;
+    private RequestDtoMapper requestDtoMapper;
     private Request request;
     private User user;
     private RequestDto requestDto;
@@ -46,6 +47,7 @@ class RequestControllerTest {
 
     @BeforeEach
     private void setUp() {
+        requestDtoMapper = new RequestDtoMapper();
         gson = new GsonBuilder().serializeNulls().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
         user = new User().setId(1).setEmail("serg@mail.ru").setName("Sergey");
         request = new Request().setId(1).setDescription("description").setCreated(LocalDateTime.now());
@@ -60,8 +62,8 @@ class RequestControllerTest {
 
     @Test
     void addRequest_Should_Return_Request() throws Exception {
-        when(requestService.addRequest(Mockito.any(Request.class), Mockito.anyInt())).thenReturn(requestDto);
-        requestService.addRequest(request, 1);
+        when(requestService.addRequest(Mockito.any(RequestDto.class), Mockito.anyInt())).thenReturn(requestDto);
+        requestService.addRequest(requestDtoMapper.toRequestDto(request), 1);
         Map<String, String> request = new HashMap<>();
         request.put("description", "Хотел бы воспользоваться щёткой для обуви");
         mvc.perform(post("/requests")

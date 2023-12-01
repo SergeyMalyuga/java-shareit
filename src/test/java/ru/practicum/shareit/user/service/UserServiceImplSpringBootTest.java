@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.persistence.EntityManager;
@@ -31,25 +31,25 @@ class UserServiceImplSpringBootTest {
     private User user;
     private User user2;
     private User user3;
-    private UserMapper userMapper;
+    private UserDtoMapper userDtoMapper;
     private List<User> listUser = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
-        userMapper = new UserMapper();
+        userDtoMapper = new UserDtoMapper();
         user = new User().setId(1).setEmail("serg@mail.ru").setName("Sergey");
         user2 = new User().setId(2).setEmail("galina@mail.ru").setName("Galina");
         user3 = new User().setId(3).setEmail("nick@mail.ru").setName("Nick");
         Collections.addAll(listUser, user, user2, user3);
-        userService.addUser(user);
-        userService.addUser(user2);
-        userService.addUser(user3);
+        userService.addUser(userDtoMapper.toUserDto(user));
+        userService.addUser(userDtoMapper.toUserDto(user2));
+        userService.addUser(userDtoMapper.toUserDto(user3));
     }
 
     @Test
     void addUser_Should_Return_User() {
         User user4 = new User().setId(4).setEmail("reds@mail.ru").setName("Sergey");
-        userService.addUser(user4);
+        userService.addUser(userDtoMapper.toUserDto(user4));
         TypedQuery<User> query = entityManager.createQuery("From User WHERE id = :id", User.class);
         User dbUser = query.setParameter("id", user4.getId()).getSingleResult();
         assertThat(dbUser.getId(), equalTo(user4.getId()));
@@ -75,7 +75,7 @@ class UserServiceImplSpringBootTest {
     void getUserDtoById_Should_Return_UserDto_By_Id() {
         UserDto userDto = userService.getUserDtoById(1);
         TypedQuery<User> query = entityManager.createQuery("FROM User WHERE id = 1", User.class);
-        UserDto dbUserDto = userMapper.toUserDto(query.getSingleResult());
+        UserDto dbUserDto = userDtoMapper.toUserDto(query.getSingleResult());
         assertThat(dbUserDto.getId(), equalTo(userDto.getId()));
     }
 

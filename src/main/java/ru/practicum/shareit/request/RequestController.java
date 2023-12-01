@@ -16,7 +16,7 @@ public class RequestController {
     RequestService requestService;
 
     @PostMapping()
-    public RequestDto postRequest(@Valid @RequestBody Request request, @RequestHeader("X-Sharer-User-Id") int userId) {
+    public RequestDto postRequest(@Valid @RequestBody RequestDto request, @RequestHeader("X-Sharer-User-Id") int userId) {
         return requestService.addRequest(request, userId);
     }
 

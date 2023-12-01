@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface UserService {
 
-    UserDto addUser(User user);
+    UserDto addUser(UserDto user);
 
     List<UserDto> getAllUsersDto();
 

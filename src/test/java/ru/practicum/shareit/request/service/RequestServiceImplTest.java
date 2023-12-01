@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemRequestDtoMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.Request;
+import ru.practicum.shareit.request.RequestDtoMapper;
 import ru.practicum.shareit.request.RequestMapper;
 import ru.practicum.shareit.request.dao.RequestRepository;
 import ru.practicum.shareit.request.dto.RequestDto;
@@ -36,16 +37,18 @@ class RequestServiceImplTest {
     @InjectMocks
     private RequestService requestService = new RequestServiceImpl();
     @Mock
-    RequestRepository requestRepository;
+    private RequestRepository requestRepository;
     @Mock
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private ItemRequestDtoMapper itemRequestDtoMapper;
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    RequestMapper requestMapper;
-    private Request request = new Request();
+    private RequestDtoMapper requestDtoMapper;
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private RequestMapper requestMapper;
+    private Request request;
     private Request request2 = new Request();
     private Request request3 = new Request();
     private User user;
@@ -58,19 +61,20 @@ class RequestServiceImplTest {
         user = new User().setId(1).setEmail("serg@mail.ru").setName("Sergey");
         item = new Item().setId(1).setAvailable(true).setDescription("Аккумуляторная дрель")
                 .setName("Дрель").setOwnerId(1);
-        request.setId(1).setDescription("описание");
+        request = new Request().setId(1).setDescription("описание");
         request2.setId(2).setDescription("описание2");
         request3.setId(3).setDescription("описание3");
         Collections.addAll(requestList, request, request2, request3);
         Collections.addAll(itemList, item);
-        requestMapper = new RequestMapper();
+        requestDtoMapper = new RequestDtoMapper();
     }
 
 
     @Test
     void addRequest_Should_Return_Request() {
         Mockito.when(userRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(user));
-        RequestDto requestDto = requestService.addRequest(request, 1);
+        Mockito.when(requestRepository.save(Mockito.any(Request.class))).thenReturn(request);
+        RequestDto requestDto = requestService.addRequest(requestDtoMapper.toRequestDto(request), 1);
         assertEquals(1, requestDto.getId());
     }
 

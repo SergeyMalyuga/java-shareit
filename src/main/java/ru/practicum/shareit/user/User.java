@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -21,11 +19,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @NotBlank(message = "Name - не может быть пустым.")
     @Column(name = "name")
     private String name;
-    @NotBlank(message = "Email - не может быть пустым.")
-    @Email(message = "Не правильный формат email")
     @Column(name = "email", unique = true)
     private String email;
 }
