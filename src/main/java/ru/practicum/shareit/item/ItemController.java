@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/items")
@@ -19,7 +19,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                           @Valid @RequestBody Item item) {
+                           @Valid @RequestBody ItemDto item) {
         return itemService.addItem(userId, item);
     }
 
@@ -29,8 +29,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.getAllItemForOwner(userId);
+    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") int userId,
+                                            @RequestParam(name = "from", required = false)
+                                            Optional<Integer> from,
+                                            @RequestParam(name = "size", required = false)
+                                            Optional<Integer> size) {
+        return itemService.getAllItemForOwner(userId, from, size);
     }
 
     @PatchMapping("/{id}")
@@ -41,8 +45,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam(name = "text") String request) {
-        return itemService.searchItem(request);
+    public List<ItemDto> searchItem(@RequestParam(name = "text") String request,
+                                    @RequestParam(name = "from", required = false)
+                                    Optional<Integer> from,
+                                    @RequestParam(name = "size", required = false)
+                                    Optional<Integer> size) {
+        return itemService.searchItem(request, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

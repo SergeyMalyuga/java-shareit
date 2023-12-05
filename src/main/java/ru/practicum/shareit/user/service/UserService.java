@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface UserService {
 
-    UserDto addUser(User user);
+    UserDto addUser(UserDto user);
 
     List<UserDto> getAllUsersDto();
 
@@ -21,4 +21,6 @@ public interface UserService {
     void removeUserById(int userId);
 
     UserDto updateUser(int userId, Map<Object, Object> fields);
+
+    void checkEmailForDuplicate(String email);
 }

@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/bookings")
@@ -19,7 +20,6 @@ public class BookingController {
 
     @PostMapping
     public BookingDto addBooking(@RequestBody Booking booking, @RequestHeader("X-Sharer-User-Id") int userId) {
-        // userService.getUserById(userId);
         return bookingService.addBooking(booking, userId);
     }
 
@@ -37,14 +37,24 @@ public class BookingController {
 
     @GetMapping()
     public List<BookingDto> getAllBookingCurrentUser(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                     @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        return bookingService.getAllBookingCurrentUser(userId, state);
+                                                     @RequestParam(name = "state", required = false,
+                                                             defaultValue = "ALL") String state,
+                                                     @RequestParam(name = "from", required = false)
+                                                     Optional<Integer> from,
+                                                     @RequestParam(name = "size", required = false)
+                                                     Optional<Integer> size) {
+
+        return bookingService.getAllBookingCurrentUser(userId, state, from, size);
     }
+
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingCurrentOwner(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                      @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        return bookingService.getAllBookingCurrentOwner(userId, state);
+                                                      @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                                      @RequestParam(name = "from", required = false)
+                                                      Optional<Integer> from,
+                                                      @RequestParam(name = "size", required = false)
+                                                      Optional<Integer> size) {
+        return bookingService.getAllBookingCurrentOwner(userId, state, from, size);
     }
-
 }
