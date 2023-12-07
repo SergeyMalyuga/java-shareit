@@ -3,9 +3,8 @@ package ru.practicum.shareit.booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.user.service.UserService;
-
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +43,6 @@ public class BookingController {
                                                      Optional<Integer> from,
                                                      @RequestParam(name = "size", required = false)
                                                      Optional<Integer> size) {
-
         return bookingService.getAllBookingCurrentUser(userId, state, from, size);
     }
 

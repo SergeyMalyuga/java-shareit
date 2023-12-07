@@ -61,6 +61,7 @@ public class ItemGatewayController {
         return itemClient.searchItem(request, userId, from, size);
     }
 
+    @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id")
     int userId, @RequestBody CommentRequestDto commentRequestDto) {
         return itemClient.addComment(itemId, userId, commentRequestDto);
