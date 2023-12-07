@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import ru.practicum.shareit.exception.EmailDuplicateException;
 import ru.practicum.shareit.exception.NoDataFoundException;
 import ru.practicum.shareit.user.User;
