@@ -3,19 +3,18 @@ package ru.practicum.shareit.request.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NoDataFoundException;
+import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemRequestDtoMapper;
 import ru.practicum.shareit.request.Request;
 import ru.practicum.shareit.request.RequestDtoMapper;
-import ru.practicum.shareit.request.dao.RequestRepository;
-import ru.practicum.shareit.user.dao.UserRepository;
-
-import ru.practicum.shareit.exception.NoDataFoundException;
-import ru.practicum.shareit.exception.UnavailableItemException;
 import ru.practicum.shareit.request.RequestMapper;
+import ru.practicum.shareit.request.dao.RequestRepository;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dao.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

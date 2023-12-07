@@ -6,9 +6,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
@@ -36,7 +33,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItemById(int itemId, int userId) {
-        return get("/" + itemId, itemId, userId);
+        return get("/" + itemId, userId);
     }
 
 
@@ -61,6 +58,6 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addComment(long itemId, long userId, CommentRequestDto commentRequestDto) {
-        return post("/" + itemId + "comment", userId, commentRequestDto);
+        return post("/" + itemId + "/comment", userId, commentRequestDto);
     }
 }

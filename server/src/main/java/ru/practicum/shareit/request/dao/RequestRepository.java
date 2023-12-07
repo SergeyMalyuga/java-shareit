@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Integer> {
+    Page<Request> findByRequesterId(int requesterId, Pageable pageable);
     List<Request> findByRequesterId(int requesterId);
 
     @Query(value = "SELECT r FROM Request AS r WHERE r.requesterId != :userId ORDER BY created DESC")
