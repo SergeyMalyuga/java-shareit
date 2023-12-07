@@ -5,10 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import javax.persistence.*;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.item.Comment;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

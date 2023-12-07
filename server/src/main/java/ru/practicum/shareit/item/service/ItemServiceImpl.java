@@ -5,10 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-import ru.practicum.shareit.item.dao.ItemRepository;
-import ru.practicum.shareit.item.dto.CommentDto;
-
-import java.lang.reflect.Field;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dao.BookingRepository;
@@ -20,10 +16,14 @@ import ru.practicum.shareit.item.CommentMapper;
 import ru.practicum.shareit.item.ItemDtoMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dao.CommentRepository;
+import ru.practicum.shareit.item.dao.ItemRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserRepository;
+
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,18 +137,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemForOwner(int ownerId, Optional<Integer> from, Optional<Integer> size) {
+        List<Item> itemList;
         if (from.isPresent() && size.isPresent()) {
             if (from.isPresent() && from.get() >= 0 && size.isPresent() && size.get() > 0) {
-                return itemRepository.findByOwnerId(ownerId,
+                itemList = itemRepository.findByOwnerId(ownerId,
                                 PageRequest.of((int) Math.ceil((double) from.get() / size.get()),
                                         size.get(), Sort.by("id").ascending())).stream()
-                        .map(e -> itemDtoMapper.itemDto(e)).collect(Collectors.toList());
+                        .collect(Collectors.toList());
             } else {
                 throw new UnavailableItemException("Не допустимое значение.");
             }
+        } else {
+            itemList = itemRepository.findByOwnerId(ownerId).stream()
+                    .sorted(Comparator.comparingInt(Item::getId)).collect(Collectors.toList());
         }
-        List<Item> itemList = itemRepository.findByOwnerId(ownerId).stream()
-                .sorted(Comparator.comparingInt(Item::getId)).collect(Collectors.toList());
         List<ItemDto> itemDtoList = new ArrayList<>();
         for (Item item : itemList) {
             ItemDto itemDto = itemDtoMapper.itemDto(item);
