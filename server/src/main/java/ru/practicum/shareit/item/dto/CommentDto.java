@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.stereotype.Component;
-
 import ru.practicum.shareit.user.dto.UserDto;
+
 import java.time.LocalDateTime;
 
 @Component

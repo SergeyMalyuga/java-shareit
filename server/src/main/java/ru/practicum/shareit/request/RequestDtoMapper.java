@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import org.springframework.stereotype.Component;
-
 import ru.practicum.shareit.request.dto.RequestDto;
 
 @Component

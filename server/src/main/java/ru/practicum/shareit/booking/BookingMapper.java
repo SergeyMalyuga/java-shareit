@@ -5,9 +5,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.user.UserDtoMapper;
-
 import ru.practicum.shareit.item.ItemDtoMapper;
+import ru.practicum.shareit.user.UserDtoMapper;
 
 
 @Component
