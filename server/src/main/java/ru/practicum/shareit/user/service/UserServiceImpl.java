@@ -3,16 +3,15 @@ package ru.practicum.shareit.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import ru.practicum.shareit.exception.EmailDuplicateException;
+import ru.practicum.shareit.exception.NoDataFoundException;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.UserDtoMapper;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.lang.reflect.Field;
-import ru.practicum.shareit.exception.EmailDuplicateException;
-import ru.practicum.shareit.exception.NoDataFoundException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDtoMapper;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
