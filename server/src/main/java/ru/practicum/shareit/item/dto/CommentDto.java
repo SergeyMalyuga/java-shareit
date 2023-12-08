@@ -24,5 +24,5 @@ public class CommentDto {
 
     private LocalDateTime created;
 
-    String authorName;
+    private String authorName;
 }

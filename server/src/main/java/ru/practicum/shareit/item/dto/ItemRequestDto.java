@@ -8,12 +8,10 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class ItemRequestDto {
+
     private int id;
-
     private String name;
-
     private String description;
-
     private Boolean available;
     private Integer requestId;
 
